@@ -1,17 +1,28 @@
 import java.util.concurrent.Semaphore;
-class Fork {
-    private Semaphore semaphore = new Semaphore(1);
+public class Fork {
+    private int id; // Fork's identifier
+    private boolean isHeld;
 
-    public boolean pickUp(char philosopherLabel) {
-        boolean pickedUp = semaphore.tryAcquire();
-        if (pickedUp) {
-            System.out.println("Philosopher " + philosopherLabel + " picked up the fork.");
-        }
-        return pickedUp;
+    public Fork(int id) {  // Constructor to accept the fork's ID
+        this.id = id;
+        this.isHeld = false;
     }
 
-    public void putDown(char philosopherLabel) {
-        semaphore.release();
-        System.out.println("Philosopher " + philosopherLabel + " put down the fork.");
+    public synchronized boolean pickUp(char philosopherLabel) {
+        if (!isHeld) {
+            isHeld = true;
+            System.out.println("Philosopher " + philosopherLabel + " picked up fork " + id);
+            return true;
+        }
+        return false;
+    }
+
+    public synchronized void putDown(char philosopherLabel) {
+        isHeld = false;
+        System.out.println("Philosopher " + philosopherLabel + " put down fork " + id);
+    }
+
+    public int getId() {
+        return id;
     }
 }

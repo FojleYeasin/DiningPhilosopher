@@ -1,4 +1,3 @@
-import java.util.concurrent.Semaphore;
 import java.util.Random;
 
 class Philosopher extends Thread {
@@ -9,18 +8,21 @@ class Philosopher extends Thread {
     private boolean hungry;
     private static Random random = new Random();
     private int tableId; // Philosopher's current table
+    private int philosopherIndex; // Philosopher index within the table (0 to 4)
     private static long startTime;
 
-    public Philosopher(char label, Table table, int tableId, long startTime) {
+    public Philosopher(char label, Table table, int tableId, int philosopherIndex, long startTime) {
         this.label = label;
         this.table = table;
-        this.leftFork = table.getLeftFork(label - 'A');
-        this.rightFork = table.getRightFork(label - 'A');
+        this.philosopherIndex = philosopherIndex; // Index relative to the table
+        this.leftFork = table.getLeftFork(philosopherIndex);
+        this.rightFork = table.getRightFork(philosopherIndex);
         this.hungry = false;
         this.tableId = tableId;
         Philosopher.startTime = startTime; // Record start time of the simulation
     }
 
+    // Method to check if the philosopher is hungry
     public boolean isHungry() {
         return hungry;
     }
@@ -67,8 +69,8 @@ class Philosopher extends Thread {
 
     public void moveToTable(Table newTable, int newTableId) {
         this.table = newTable;
-        this.leftFork = newTable.getLeftFork(label - 'A');
-        this.rightFork = newTable.getRightFork(label - 'A');
+        this.leftFork = newTable.getLeftFork(philosopherIndex);
+        this.rightFork = newTable.getRightFork(philosopherIndex);
         this.tableId = newTableId;
         System.out.println("Philosopher " + label + " moved to Table " + newTableId);
     }

@@ -2,54 +2,50 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Main {
+    private static Table sixthTable;
     private static List<Philosopher> sixthTablePhilosophers = new ArrayList<>();
-    private static long simulationStartTime;
-    private static boolean sixthTableDeadlock = false;
-    private static Philosopher lastMovedPhilosopher;
 
     public static void main(String[] args) throws InterruptedException {
-        int numberOfPhilosophers = 5;
+        int numberOfPhilosophersPerTable = 5;
         int numberOfTables = 6; // 5 tables with philosophers, 1 empty table with forks
         Table[] tables = new Table[numberOfTables];
         char[] philosopherLabels = "ABCDEFGHIJKLMNOPQRSTUVWXY".toCharArray();
 
         // Record simulation start time
-        simulationStartTime = System.currentTimeMillis();
+        long simulationStartTime = System.currentTimeMillis();
 
         // Initialize tables
         for (int i = 0; i < numberOfTables; i++) {
-            tables[i] = new Table(i, numberOfPhilosophers);
+            tables[i] = new Table(i, numberOfPhilosophersPerTable);
         }
 
-        // Initialize philosophers at 5 tables
-        for (int i = 0; i < 5; i++) {
-            for (int j = 0; j < numberOfPhilosophers; j++) {
-                Philosopher philosopher = new Philosopher(philosopherLabels[i * numberOfPhilosophers + j], tables[i], i, simulationStartTime);
+        // Assign the sixth table to the variable for later use
+        sixthTable = tables[5]; // Sixth table is the last one (index 5)
+
+        // Initialize philosophers at the first 5 tables
+        int labelIndex = 0;
+        for (int i = 0; i < 5; i++) { // Iterate over the 5 tables
+            for (int j = 0; j < numberOfPhilosophersPerTable; j++) { // For each table, 5 philosophers
+                Philosopher philosopher = new Philosopher(philosopherLabels[labelIndex], tables[i], i, j, simulationStartTime);
                 tables[i].addPhilosopher(philosopher);
                 philosopher.start();
+                labelIndex++; // Move to the next philosopher label
             }
         }
 
-        // Monitor for deadlock at the sixth table
-        while (!sixthTableDeadlock) {
-            Thread.sleep(1000); // Check every second
-        }
-
-        // Output the result
-        long deadlockTime = (System.currentTimeMillis() - simulationStartTime) / 1000;
-        System.out.println("Sixth table deadlocked after " + deadlockTime + " seconds.");
-        System.out.println("The last philosopher to move to the sixth table was " + lastMovedPhilosopher.getLabel() + ".");
+        // Additional logic for deadlock detection...
     }
 
+    // Method to move a philosopher to the sixth table when deadlock occurs
     public static synchronized void movePhilosopherToSixthTable(Philosopher philosopher) {
+        // Check if the sixth table already has 5 philosophers
         if (sixthTablePhilosophers.size() < 5) {
             sixthTablePhilosophers.add(philosopher);
-            philosopher.moveToTable(new Table(5, 5), 5); // Move to the sixth table
-            lastMovedPhilosopher = philosopher;
-
-            if (sixthTablePhilosophers.size() == 5) {
-                sixthTableDeadlock = true; // Set flag when the sixth table is full
-            }
+            int philosopherIndex = sixthTablePhilosophers.size() - 1; // Get the philosopher's new index at the sixth table
+            philosopher.moveToTable(sixthTable, 5); // Move to sixth table (index 5)
+        } else {
+            System.out.println("Sixth table is full, deadlock has occurred at the sixth table.");
+            // Optionally, stop the simulation or handle further deadlock detection
         }
     }
 }
