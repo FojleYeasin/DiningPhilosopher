@@ -1,14 +1,17 @@
 import java.util.concurrent.Semaphore;
-public class Fork {
+class Fork {
     private Semaphore semaphore = new Semaphore(1);
 
-    public void pickUp(int philosopherId) throws InterruptedException {
-        semaphore.acquire();
-        System.out.println("Philosopher " + philosopherId + " picked up a fork.");
+    public boolean pickUp(char philosopherLabel) {
+        boolean pickedUp = semaphore.tryAcquire();
+        if (pickedUp) {
+            System.out.println("Philosopher " + philosopherLabel + " picked up the fork.");
+        }
+        return pickedUp;
     }
 
-    public void putDown(int philosopherId) {
+    public void putDown(char philosopherLabel) {
         semaphore.release();
-        System.out.println("Philosopher " + philosopherId + " put down a fork.");
+        System.out.println("Philosopher " + philosopherLabel + " put down the fork.");
     }
 }
