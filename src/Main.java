@@ -7,7 +7,7 @@ public class Main {
 
     public static void main(String[] args) throws InterruptedException {
         int numberOfPhilosophersPerTable = 5;
-        int numberOfTables = 6; // 5 tables with philosophers, 1 empty table with forks
+        int numberOfTables = 2; // 5 tables with philosophers, 1 empty table with forks
         Table[] tables = new Table[numberOfTables];
         char[] philosopherLabels = "ABCDEFGHIJKLMNOPQRSTUVWXY".toCharArray();
 
@@ -20,11 +20,11 @@ public class Main {
         }
 
         // Assign the sixth table to the variable for later use
-        sixthTable = tables[5]; // Sixth table is the last one (index 5)
+        sixthTable = tables[1]; // Sixth table is the last one (index 5)
 
         // Initialize philosophers at the first 5 tables
         int labelIndex = 0;
-        for (int i = 0; i < 5; i++) { // Iterate over the 5 tables
+        for (int i = 0; i < 2; i++) { // Iterate over the 5 tables
             for (int j = 0; j < numberOfPhilosophersPerTable; j++) { // For each table, 5 philosophers
                 Philosopher philosopher = new Philosopher(philosopherLabels[labelIndex], tables[i], i, j, simulationStartTime);
                 tables[i].addPhilosopher(philosopher);
@@ -43,7 +43,11 @@ public class Main {
             sixthTablePhilosophers.add(philosopher);
             int philosopherIndex = sixthTablePhilosophers.size() - 1; // Get the philosopher's new index at the sixth table
             philosopher.moveToTable(sixthTable, 5); // Move to sixth table (index 5)
+
+            // Print message about philosopher transfer
+            System.out.println("Philosopher " + philosopher.getLabel() + " transferred from Table " + philosopher.getTableId() + " to Table 5");
         } else {
+            // Print message when deadlock happens on the sixth table
             System.out.println("Sixth table is full, deadlock has occurred at the sixth table.");
             // Optionally, stop the simulation or handle further deadlock detection
         }

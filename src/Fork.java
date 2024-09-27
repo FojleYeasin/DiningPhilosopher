@@ -1,25 +1,24 @@
-import java.util.concurrent.Semaphore;
 public class Fork {
     private int id; // Fork's identifier
     private boolean isHeld;
 
-    public Fork(int id) {  // Constructor to accept the fork's ID
+    public Fork(int id) {
         this.id = id;
         this.isHeld = false;
     }
 
-    public synchronized boolean pickUp(char philosopherLabel) {
+    public synchronized boolean pickUp(char philosopherLabel, int tableId) {
         if (!isHeld) {
             isHeld = true;
-            System.out.println("Philosopher " + philosopherLabel + " picked up fork " + id);
+            System.out.println("Philosopher " + philosopherLabel + " picked up fork " + id + " from Table " + tableId);
             return true;
         }
         return false;
     }
 
-    public synchronized void putDown(char philosopherLabel) {
+    public synchronized void putDown(char philosopherLabel, int tableId) {
         isHeld = false;
-        System.out.println("Philosopher " + philosopherLabel + " put down fork " + id);
+        System.out.println("Philosopher " + philosopherLabel + " put down fork " + id + " from Table " + tableId);
     }
 
     public int getId() {

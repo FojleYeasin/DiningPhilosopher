@@ -41,8 +41,11 @@ public class Table {
                 hungryPhilosophers++;
             }
         }
+
+        // Deadlock occurs when all philosophers at the table are hungry
         if (hungryPhilosophers == philosophers.size()) {
             System.out.println("Deadlock detected at Table " + tableId);
+
             // Move the philosopher to the sixth table if deadlock occurs
             if (tableId != 5) { // Do not move philosophers from the sixth table
                 Main.movePhilosopherToSixthTable(philosopher);

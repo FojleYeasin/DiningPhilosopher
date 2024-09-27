@@ -44,16 +44,16 @@ class Philosopher extends Thread {
                 think();
                 hungry = true;
                 // Philosopher tries to pick up the left fork
-                if (leftFork.pickUp(label)) {
+                if (leftFork.pickUp(label, tableId)) {  // Pass tableId as well
                     Thread.sleep(4000); // wait for 4 seconds before trying the right fork
                     // Philosopher tries to pick up the right fork
-                    if (rightFork.pickUp(label)) {
+                    if (rightFork.pickUp(label, tableId)) {  // Pass tableId as well
                         eat();
                         // Philosopher puts down the right fork after eating
-                        rightFork.putDown(label);
+                        rightFork.putDown(label, tableId);  // Pass tableId as well
                     }
                     // Philosopher puts down the left fork if unsuccessful or after eating
-                    leftFork.putDown(label);
+                    leftFork.putDown(label, tableId);  // Pass tableId as well
                 }
                 hungry = false;
                 table.detectDeadlock(this); // Detect deadlock after each cycle
@@ -65,6 +65,10 @@ class Philosopher extends Thread {
 
     public char getLabel() {
         return label;
+    }
+
+    public int getTableId() {
+        return tableId;
     }
 
     public void moveToTable(Table newTable, int newTableId) {
