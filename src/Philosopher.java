@@ -6,7 +6,7 @@ class Philosopher extends Thread {
     private Fork rightFork;
     private Table table;
     private boolean hungry;
-    private static Random random = new Random();
+    private static Random random = new Random(); // Initialize Random
     private int tableId; // Philosopher's current table
     private int philosopherIndex; // Philosopher index within the table (0 to 4)
     private static long startTime;
@@ -15,8 +15,8 @@ class Philosopher extends Thread {
         this.label = label;
         this.table = table;
         this.philosopherIndex = philosopherIndex; // Index relative to the table
-        this.leftFork = table.getLeftFork(philosopherIndex);
-        this.rightFork = table.getRightFork(philosopherIndex);
+        this.leftFork = table.getLeftFork(philosopherIndex);  // Left fork is at the philosopher's index
+        this.rightFork = table.getRightFork(philosopherIndex); // Right fork is at the next index
         this.hungry = false;
         this.tableId = tableId;
         Philosopher.startTime = startTime; // Record start time of the simulation
@@ -27,14 +27,19 @@ class Philosopher extends Thread {
         return hungry;
     }
 
+    // Method to return the current table ID of the philosopher
+    public int getTableId() {
+        return this.tableId;
+    }
+
     private void think() throws InterruptedException {
-        System.out.println("Philosopher " + label + " is thinking.");
-        Thread.sleep(random.nextInt(10000));
+        System.out.println("Philosopher " + label + " is thinking at Table " + tableId);
+        Thread.sleep(random.nextInt(10000)); // Random thinking time
     }
 
     private void eat() throws InterruptedException {
-        System.out.println("Philosopher " + label + " is eating.");
-        Thread.sleep(random.nextInt(5000));
+        System.out.println("Philosopher " + label + " is eating at Table " + tableId);
+        Thread.sleep(random.nextInt(5000)); // Random eating time
     }
 
     @Override
@@ -43,20 +48,26 @@ class Philosopher extends Thread {
             while (true) {
                 think();
                 hungry = true;
-                // Philosopher tries to pick up the left fork
-                if (leftFork.pickUp(label, tableId)) {  // Pass tableId as well
-                    Thread.sleep(4000); // wait for 4 seconds before trying the right fork
-                    // Philosopher tries to pick up the right fork
-                    if (rightFork.pickUp(label, tableId)) {  // Pass tableId as well
-                        eat();
-                        // Philosopher puts down the right fork after eating
-                        rightFork.putDown(label, tableId);  // Pass tableId as well
-                    }
-                    // Philosopher puts down the left fork if unsuccessful or after eating
-                    leftFork.putDown(label, tableId);  // Pass tableId as well
-                }
-                hungry = false;
+                System.out.println("Philosopher " + label + " is hungry at Table " + tableId);
                 table.detectDeadlock(this); // Detect deadlock after each cycle
+                // Philosopher tries to pick up the left fork
+                if (leftFork.pickUp(label, tableId)) {
+                    Thread.sleep(1000); // wait before trying the right fork
+
+                    // Philosopher tries to pick up the right fork
+                    if (rightFork.pickUp(label, tableId)) {
+                        eat(); // If both forks are picked up, the philosopher eats
+                        hungry = false;
+                        leftFork.putDown(label, tableId);
+                        rightFork.putDown(label, tableId);
+                    }
+
+                    // Philosopher puts down the left fork after attempting to pick the right fork
+
+                }
+
+
+
             }
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
@@ -65,10 +76,6 @@ class Philosopher extends Thread {
 
     public char getLabel() {
         return label;
-    }
-
-    public int getTableId() {
-        return tableId;
     }
 
     public void moveToTable(Table newTable, int newTableId) {

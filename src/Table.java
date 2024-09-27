@@ -34,6 +34,7 @@ public class Table {
     }
 
     // Method to detect deadlock
+    // Method to detect deadlock
     public synchronized void detectDeadlock(Philosopher philosopher) {
         int hungryPhilosophers = 0;
         for (Philosopher p : philosophers) {
@@ -52,6 +53,7 @@ public class Table {
             }
         }
     }
+
 
     public int getTableId() {
         return tableId;

@@ -7,7 +7,7 @@ public class Main {
 
     public static void main(String[] args) throws InterruptedException {
         int numberOfPhilosophersPerTable = 5;
-        int numberOfTables = 2; // 5 tables with philosophers, 1 empty table with forks
+        int numberOfTables = 5; // 5 tables with philosophers, 1 empty table with forks
         Table[] tables = new Table[numberOfTables];
         char[] philosopherLabels = "ABCDEFGHIJKLMNOPQRSTUVWXY".toCharArray();
 
@@ -24,7 +24,7 @@ public class Main {
 
         // Initialize philosophers at the first 5 tables
         int labelIndex = 0;
-        for (int i = 0; i < 2; i++) { // Iterate over the 5 tables
+        for (int i = 0; i < 5; i++) { // Iterate over the 5 tables
             for (int j = 0; j < numberOfPhilosophersPerTable; j++) { // For each table, 5 philosophers
                 Philosopher philosopher = new Philosopher(philosopherLabels[labelIndex], tables[i], i, j, simulationStartTime);
                 tables[i].addPhilosopher(philosopher);
