@@ -1,5 +1,5 @@
 public class Fork {
-    private int id; // Fork's identifier
+    private int id;
     private boolean isHeld;
 
     public Fork(int id) {
